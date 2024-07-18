@@ -1,0 +1,22 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+    - name: Ensure the Directory ~/ansible_drop exists
+      ansible.builtin.file:
+        path: /home/master/ansible_drop
+        state: directory
+        mode: '0777'
+  
+- hosts: all
+  post_tasks:
+    - name: Copy a new "Certificate" file into place, backing up the original if it differs from the copied version
+      ansible.builtin.copy:
+        src: /home/test_user/ansible/files/test_files/
+        dest: ~/ansible_drop/
+        owner: master
+        group: master
+        mode: '0777'
+    - name: Execute the script
+      command: sh /home/master/ansible_drop/hello_world.sh
